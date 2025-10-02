@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useWallet } from "./wallet-context"
 
 export function Header() {
-  const { isConnected, publicKey } = useWallet()
+  const { isConnected, activeWallet } = useWallet()
   
   const formatAddress = (address: string) => {
     if (!address) return ''
@@ -32,7 +32,7 @@ export function Header() {
               <Button variant="link" className="text-[#37322f] hover:text-[#37322f]/80 text-sm font-medium cursor-pointer">Docs</Button>
             </div>
             <Button variant="ghost" className="text-[#37322f] bg-[#37322f]/5 hover:bg-[#37322f]/20 cursor-pointer ">
-              {isConnected ? formatAddress(publicKey || '') : 'Log in'}
+              {isConnected && activeWallet ? formatAddress(activeWallet.publicKey) : 'Log in'}
             </Button>
           </div>
         </nav>

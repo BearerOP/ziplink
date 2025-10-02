@@ -2,33 +2,127 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
+interface SolanaWallet {
+  id: string
+  name: string
+  publicKey: string
+  balance: number
+  isActive: boolean
+  created: Date
+}
+
 interface WalletContextType {
   isConnected: boolean
-  publicKey: string | null
-  balance: number
+  wallets: SolanaWallet[]
+  activeWallet: SolanaWallet | null
   connectWallet: () => Promise<void>
   disconnectWallet: () => void
+  createNewWallet: (name?: string) => Promise<SolanaWallet>
+  switchWallet: (walletId: string) => void
+  deleteWallet: (walletId: string) => void
+  copyAddress: (address: string) => Promise<void>
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
 
+// Helper function to generate a mock Solana address
+const generateSolanaAddress = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789'
+  let result = ''
+  for (let i = 0; i < 44; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false)
-  const [publicKey, setPublicKey] = useState<string | null>(null)
-  const [balance, setBalance] = useState(0)
+  const [wallets, setWallets] = useState<SolanaWallet[]>([])
+  const [activeWallet, setActiveWallet] = useState<SolanaWallet | null>(null)
 
   const connectWallet = async () => {
     try {
       // Check if window.solana exists (from the shim)
       if (typeof window !== 'undefined' && window.solana) {
         const response = await window.solana.connect()
-        setPublicKey(response.publicKey)
+        
+        // Create first wallet if none exist
+        if (wallets.length === 0) {
+          const firstWallet: SolanaWallet = {
+            id: '1',
+            name: 'Main Wallet',
+            publicKey: response.publicKey || generateSolanaAddress(),
+            balance: 0.00,
+            isActive: true,
+            created: new Date()
+          }
+          setWallets([firstWallet])
+          setActiveWallet(firstWallet)
+        }
+        
         setIsConnected(true)
-        // Mock balance for demo
-        setBalance(0.00)
       }
     } catch (error) {
       console.error('Failed to connect wallet:', error)
+    }
+  }
+
+  const createNewWallet = async (name?: string): Promise<SolanaWallet> => {
+    const newWallet: SolanaWallet = {
+      id: Date.now().toString(),
+      name: name || `Wallet ${wallets.length + 1}`,
+      publicKey: generateSolanaAddress(),
+      balance: 0.00,
+      isActive: false,
+      created: new Date()
+    }
+    
+    // Set all other wallets to inactive
+    const updatedWallets = wallets.map(w => ({ ...w, isActive: false }))
+    newWallet.isActive = true
+    
+    const allWallets = [...updatedWallets, newWallet]
+    setWallets(allWallets)
+    setActiveWallet(newWallet)
+    
+    return newWallet
+  }
+
+  const switchWallet = (walletId: string) => {
+    const updatedWallets = wallets.map(w => ({
+      ...w,
+      isActive: w.id === walletId
+    }))
+    setWallets(updatedWallets)
+    
+    const newActiveWallet = updatedWallets.find(w => w.id === walletId)
+    setActiveWallet(newActiveWallet || null)
+  }
+
+  const deleteWallet = (walletId: string) => {
+    const updatedWallets = wallets.filter(w => w.id !== walletId)
+    setWallets(updatedWallets)
+    
+    // If deleted wallet was active, switch to first available
+    if (activeWallet?.id === walletId) {
+      if (updatedWallets.length > 0) {
+        const newActive = { ...updatedWallets[0], isActive: true }
+        setWallets(prev => prev.map(w => w.id === newActive.id ? newActive : { ...w, isActive: false }))
+        setActiveWallet(newActive)
+      } else {
+        setActiveWallet(null)
+        setIsConnected(false)
+      }
+    }
+  }
+
+  const copyAddress = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address)
+      // You could add a toast notification here
+      console.log('Address copied to clipboard')
+    } catch (error) {
+      console.error('Failed to copy address:', error)
     }
   }
 
@@ -37,26 +131,39 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       window.solana.disconnect()
     }
     setIsConnected(false)
-    setPublicKey(null)
-    setBalance(0)
+    setWallets([])
+    setActiveWallet(null)
   }
 
   useEffect(() => {
     // Check if already connected on mount
     if (typeof window !== 'undefined' && window.solana && window.solana.publicKey) {
-      setPublicKey(window.solana.publicKey)
+      // Create a default wallet if none exist
+      const defaultWallet: SolanaWallet = {
+        id: '1',
+        name: 'Main Wallet',
+        publicKey: window.solana.publicKey,
+        balance: 0.00,
+        isActive: true,
+        created: new Date()
+      }
+      setWallets([defaultWallet])
+      setActiveWallet(defaultWallet)
       setIsConnected(true)
-      setBalance(0.00)
     }
   }, [])
 
   return (
     <WalletContext.Provider value={{
       isConnected,
-      publicKey,
-      balance,
+      wallets,
+      activeWallet,
       connectWallet,
-      disconnectWallet
+      disconnectWallet,
+      createNewWallet,
+      switchWallet,
+      deleteWallet,
+      copyAddress
     }}>
       {children}
     </WalletContext.Provider>
