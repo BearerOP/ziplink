@@ -86,28 +86,28 @@ export default function LandingPage() {
 
         {/* Main container with proper margins */}
         <div className="w-full max-w-none px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] relative flex flex-col justify-start items-start min-h-screen">
-          
 
-        <div className="self-stretch h-12 relative overflow-hidden border-t border-b border-[rgba(55,50,47,0.12)] mt-8">
-        <Header/>
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
-          <div className="w-full h-full relative">
-            {Array.from({ length: 400 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-[300px] h-16 border border-[rgba(3,7,18,0.08)]"
-                style={{
-                  left: `${i * 300 - 600}px`,
-                  top: "-120px",
-                  transform: "rotate(-45deg)",
-                  transformOrigin: "top left",
-                }}
-              />
-            ))}
+
+          <div className="self-stretch h-12 relative overflow-hidden border-t border-b border-[rgba(55,50,47,0.12)] mt-8">
+            <Header />
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+              <div className="w-full h-full relative">
+                {Array.from({ length: 400 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-[300px] h-16 border border-[rgba(3,7,18,0.08)]"
+                    style={{
+                      left: `${i * 300 - 600}px`,
+                      top: "-120px",
+                      transform: "rotate(-45deg)",
+                      transformOrigin: "top left",
+                    }}
+                  />
+                ))}
+              </div>
+
+            </div>
           </div>
-          
-        </div>
-      </div>
 
           {/* Left vertical line */}
           <div className="w-[1px] h-full absolute left-4 sm:left-6 md:left-8 lg:left-0 top-0 bg-[rgba(55,50,47,0.12)] shadow-[1px_0px_0px_white] z-0"></div>
@@ -554,8 +554,8 @@ function FeatureCard({
   return (
     <div
       className={`w-full md:flex-1 self-stretch px-6 py-5 overflow-hidden flex flex-col justify-start items-start gap-2 cursor-pointer relative border-b md:border-b-0 last:border-b-0 ${isActive
-          ? "bg-white shadow-[0px_0px_0px_0.75px_#E0DEDB_inset]"
-          : "border-l-0 border-r-0 md:border border-[#E0DEDB]/80"
+        ? "bg-white shadow-[0px_0px_0px_0.75px_#E0DEDB_inset]"
+        : "border-l-0 border-r-0 md:border border-[#E0DEDB]/80"
         }`}
       onClick={onClick}
     >
