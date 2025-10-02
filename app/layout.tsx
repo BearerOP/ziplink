@@ -21,9 +21,9 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: "ZipLink - Effortless Custom Wallet & Adapter",
+  title: "ZipLink - Solana Wallet, Adapter & Swapper",
   description:
-    "Streamline your billing process with seamless automation for every custom contract, tailored by ZipLink.",
+    "Secure Solana wallet with built-in token swapping, dApp adapter layer, and advanced key management. Experience seamless Solana transactions.",
 }
 
 export default function RootLayout({

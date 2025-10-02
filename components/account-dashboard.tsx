@@ -65,7 +65,7 @@ export function AccountDashboard() {
           <div className="w-5 h-5 bg-[#37322f]/10 rounded flex items-center justify-center">
             <span className="text-[#37322f] text-xs">💼</span>
           </div>
-          <span className="text-[rgba(55,50,47,0.80)] text-sm font-sans">TipLink Account Assets</span>
+          <span className="text-[rgba(55,50,47,0.80)] text-sm font-sans">Solana Wallet Assets</span>
         </div>
         <div className="flex items-baseline gap-2 mb-6">
           <span className="text-4xl font-bold text-[#37322f] font-serif">${balance.toFixed(2)}</span>
@@ -74,7 +74,7 @@ export function AccountDashboard() {
         
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 px-3 py-1 bg-[#F7F5F3] rounded-lg border border-[rgba(55,50,47,0.12)]">
-            <span className="text-[rgba(55,50,47,0.80)] text-sm font-sans">📋 Your Wallet Address</span>
+            <span className="text-[rgba(55,50,47,0.80)] text-sm font-sans">📋 Your Solana Address</span>
           </div>
           <span className="text-[rgba(55,50,47,0.80)] text-sm font-mono">
             {publicKey ? formatAddress(publicKey) : 'Not connected'}
@@ -84,16 +84,16 @@ export function AccountDashboard() {
         {/* Action Buttons */}
         <div className="grid grid-cols-4 gap-3 mb-8">
           <Button className="bg-[#37322f] hover:bg-[#37322f]/90 text-white py-3 font-sans shadow-[0px_0px_0px_2.5px_rgba(255,255,255,0.08)_inset] rounded-full">
-            Send
+            Send SOL
           </Button>
           <Button variant="outline" className="py-3 border-[rgba(55,50,47,0.12)] text-[#37322f] hover:bg-[#37322f]/5 font-sans rounded-full">
-            Add Funds
+            Receive
           </Button>
           <Button variant="outline" className="py-3 border-[rgba(55,50,47,0.12)] text-[#37322f] hover:bg-[#37322f]/5 font-sans rounded-full">
-            Withdraw
+            Stake SOL
           </Button>
           <Button variant="outline" className="py-3 border-[rgba(55,50,47,0.12)] text-[#37322f] hover:bg-[#37322f]/5 font-sans rounded-full">
-            Swap
+            Swap Tokens
           </Button>
         </div>
       </div>
@@ -121,16 +121,16 @@ export function AccountDashboard() {
       <div className="text-center py-16 relative z-10">
         <div className="mb-4">
           <h3 className="text-xl font-semibold text-[#37322f] mb-2 font-serif">
-            You don&apos;t have any assets yet!
+            No Solana tokens found!
           </h3>
           <p className="text-[rgba(55,50,47,0.80)] mb-6 font-sans">
-            Start by buying or depositing funds:
+            Start by receiving SOL or other Solana tokens:
           </p>
         </div>
         
         <Button className="bg-[#37322f] hover:bg-[#37322f]/90 text-white px-6 py-3 font-sans shadow-[0px_0px_0px_2.5px_rgba(255,255,255,0.08)_inset] rounded-full">
           <span className="mr-2">+</span>
-          Add Funds
+          Receive SOL
         </Button>
       </div>
     </div>
