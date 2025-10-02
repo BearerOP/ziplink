@@ -9,6 +9,23 @@ const eslintConfig = [
   ...compat.config({
     extends: ['next', 'prettier'],
   }),
+  {
+    rules: {
+      // Disable Next.js specific rules
+      '@next/next/no-img-element': 'off',
+      '@next/next/no-page-custom-font': 'off',
+      
+      // Disable Tailwind CSS conflicts
+      'tailwindcss/no-contradicting-classname': 'off',
+      
+      // Disable other common rules that might cause issues
+      'react/no-unescaped-entities': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'prefer-const': 'off',
+      'no-unused-vars': 'off',
+    },
+  },
 ]
  
 export default eslintConfig

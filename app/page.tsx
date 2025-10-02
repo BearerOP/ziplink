@@ -15,12 +15,15 @@ import CTASection from "../components/cta-section"
 import FooterSection from "../components/footer-section"
 import WalletFeaturesSection from "../components/wallet-features"
 import { Header } from "@/components/header"
+import { useWallet } from "@/components/wallet-context"
+import { AccountDashboard } from "@/components/account-dashboard"
+import { Button } from "@/components/ui/button"
 
 
 // Reusable Badge Component
 function Badge({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="px-[14px] py-[6px] bg-white shadow-[0px_0px_0px_4px_rgba(55,50,47,0.05)] overflow-hidden rounded-[90px] flex justify-start items-center gap-[8px] border border-[rgba(2,6,23,0.08)] shadow-xs">
+    <div className="px-[14px] py-[6px] bg-white overflow-hidden rounded-[90px] flex justify-start items-center gap-[8px] border border-[rgba(2,6,23,0.08)] shadow-xs">
       <div className="w-[14px] h-[14px] relative overflow-hidden flex items-center justify-center">{icon}</div>
       <div className="text-center flex justify-center flex-col text-[#37322F] text-xs font-medium leading-3 font-sans">
         {text}
@@ -30,6 +33,7 @@ function Badge({ icon, text }: { icon: React.ReactNode; text: string }) {
 }
 
 export default function LandingPage() {
+  const { isConnected, connectWallet } = useWallet()
   const [activeCard, setActiveCard] = useState(0)
   const [progress, setProgress] = useState(0)
   const mountedRef = useRef(true)
@@ -78,6 +82,24 @@ export default function LandingPage() {
       default:
         return <div className="text-[#828387] text-sm">Customer Subscription Status and Details</div>
     }
+  }
+
+  // If wallet is connected, show the account dashboard
+  if (isConnected) {
+    return (
+      <div className="w-full min-h-screen relative bg-[#F7F5F3] overflow-x-hidden flex flex-col justify-start items-center">
+        <div className="relative flex flex-col justify-start items-center w-full">
+          <div className="w-full max-w-none px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] relative flex flex-col justify-start items-start min-h-screen">
+            <div className="self-stretch h-12 relative overflow-hidden border-t border-b border-[rgba(55,50,47,0.12)] mt-8">
+              <Header />
+            </div>
+            <div className="w-full flex justify-center items-center py-12">
+              <AccountDashboard />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -142,12 +164,15 @@ export default function LandingPage() {
 
               <div className="w-full max-w-[497px] lg:w-[497px] flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 relative z-10 mt-6 sm:mt-8 md:mt-10 lg:mt-12">
                 <div className="backdrop-blur-[8.25px] flex justify-start items-center gap-4">
-                  <div className="h-10 sm:h-11 md:h-12 px-6 sm:px-8 md:px-10 lg:px-12 py-2 sm:py-[6px] relative bg-[#37322F] shadow-[0px_0px_0px_2.5px_rgba(255,255,255,0.08)_inset] overflow-hidden rounded-full flex justify-center items-center">
+                  <Button 
+                    onClick={connectWallet}
+                    className="h-10 sm:h-11 md:h-12 px-6 sm:px-8 md:px-10 lg:px-12 py-2 sm:py-[6px] relative bg-[#37322F] hover:bg-[#37322F]/90 shadow-[0px_0px_0px_2.5px_rgba(255,255,255,0.08)_inset] overflow-hidden rounded-full flex justify-center items-center border-0"
+                  >
                     <div className="w-20 sm:w-24 md:w-28 lg:w-44 h-[41px] absolute left-0 top-[-0.5px] bg-gradient-to-b from-[rgba(255,255,255,0)] to-[rgba(0,0,0,0.10)] mix-blend-multiply"></div>
-                    <div className="flex flex-col justify-center text-white text-sm sm:text-base md:text-[15px] font-medium leading-5 font-sans">
-                      Start for free
+                    <div className="flex flex-col justify-center text-white text-sm sm:text-base md:text-[15px] font-medium leading-5 font-sans relative z-10">
+                      Connect Wallet
                     </div>
-                  </div>
+                  </Button>
                 </div>
               </div>
 

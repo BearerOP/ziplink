@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useWallet } from "./wallet-context"
 
 export function Header() {
+  const { isConnected, publicKey } = useWallet()
+  
+  const formatAddress = (address: string) => {
+    if (!address) return ''
+    return `${address.slice(0, 4)}...${address.slice(-4)}`
+  }
   return (
     <>
       <div className="self-stretch border-[rgba(55,50,47,0.12)] flex justify-center items-start border-t border-b-0">
@@ -25,7 +32,7 @@ export function Header() {
               <Button variant="link" className="text-[#37322f] hover:text-[#37322f]/80 text-sm font-medium cursor-pointer">Docs</Button>
             </div>
             <Button variant="ghost" className="text-[#37322f] bg-[#37322f]/5 hover:bg-[#37322f]/20 cursor-pointer ">
-              Log in
+              {isConnected ? formatAddress(publicKey || '') : 'Log in'}
             </Button>
           </div>
         </nav>
