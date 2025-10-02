@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { useWallet } from './wallet-context'
+import { toast } from 'sonner'
 
 export function AccountDashboard() {
   const { wallets, activeWallet, disconnectWallet, createNewWallet, switchWallet, deleteWallet, copyAddress } = useWallet()
@@ -26,34 +27,11 @@ export function AccountDashboard() {
 
   const handleCopyAddress = async (address: string) => {
     await copyAddress(address)
-    // You could add a toast notification here
+    toast.success('Address copied to clipboard!')
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white shadow-[0px_0px_0px_0.9056603908538818px_rgba(0,0,0,0.08)] overflow-hidden rounded-[6px] sm:rounded-[8px] lg:rounded-[9.06px] p-6 sm:p-8 min-h-[600px] relative">
-      {/* Decorative border pattern - top */}
-      <div className="absolute top-0 left-0 right-0 h-1 overflow-hidden">
-        <div className="flex">
-          {Array.from({ length: 100 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-4 h-1 border-r border-[rgba(55,50,47,0.08)]"
-            />
-          ))}
-        </div>
-      </div>
-      
-      {/* Decorative border pattern - bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 overflow-hidden">
-        <div className="flex">
-          {Array.from({ length: 100 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-4 h-1 border-r border-[rgba(55,50,47,0.08)]"
-            />
-          ))}
-        </div>
-      </div>
+    <div className="w-full max-w-5xl mx-auto bg-white shadow-[0px_0px_0px_0.9056603908538818px_rgba(0,0,0,0.08)] overflow-hidden rounded-[6px] sm:rounded-[8px] lg:rounded-2xl p-6 sm:p-8 min-h-[600px] relative">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div className="flex items-center gap-4">
@@ -75,14 +53,14 @@ export function AccountDashboard() {
           <Button 
             variant="outline" 
             onClick={() => setShowWalletList(!showWalletList)}
-            className="text-[#37322f] border-[rgba(55,50,47,0.12)] hover:bg-[#37322f]/5 font-sans"
+            className="text-[#37322f] border-[rgba(55,50,47,0.12)] hover:bg-[#37322f]/5 font-sans cursor-pointer"
           >
             {!showWalletList ? 'View Wallets' : 'Hide Wallets'}
           </Button>
           <Button  
             variant="outline"
             onClick={disconnectWallet}
-            className="text-red-700 border-red-700 hover:bg-red-200 font-sans"
+            className="text-red-700 border-red-700 hover:bg-red-200 font-sans cursor-pointer" 
           >
             Disconnect
           </Button>
@@ -96,7 +74,7 @@ export function AccountDashboard() {
             <h3 className="text-lg font-semibold text-[#37322f] font-serif">Your Wallets</h3>
             <Button 
               onClick={() => setShowCreateWallet(true)}
-              className="bg-[#37322f] hover:bg-[#37322f]/90 text-white text-sm font-sans rounded-full px-4 py-2"
+              className="bg-[#37322f] hover:bg-[#37322f]/90 text-white text-sm font-sans rounded-full px-4 py-2 cursor-pointer"
             >
               + New Wallet
             </Button>
@@ -106,7 +84,7 @@ export function AccountDashboard() {
             {wallets.map((wallet) => (
               <div 
                 key={wallet.id}
-                className={`flex items-center justify-between p-3 rounded-lg border ${
+                className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer ${
                   wallet.isActive 
                     ? 'bg-white border-[#37322f] shadow-sm' 
                     : 'bg-white/50 border-[rgba(55,50,47,0.12)] hover:bg-white/80'

@@ -4,6 +4,7 @@ import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { WalletProvider } from "@/components/wallet-context"
 import SolanaProviderShim from "@/components/solana-provider-shim"
+import { Toaster } from "sonner"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({
         <WalletProvider>
           {children}
         </WalletProvider>
+        <Toaster richColors closeButton position="bottom-right" />
       </body>
     </html>
   )
