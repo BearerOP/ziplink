@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { WalletProvider } from "@/components/wallet-context"
-import SolanaProviderShim from "@/components/solana-provider-shim"
 import { Toaster } from "sonner"
 
 const inter = Inter({
@@ -44,11 +43,10 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" />
       </head>
       <body className="font-sans antialiased">
-        <SolanaProviderShim />
         <WalletProvider>
           {children}
+          <Toaster richColors closeButton position="bottom-right" />
         </WalletProvider>
-        <Toaster richColors closeButton position="bottom-right" />
       </body>
     </html>
   )

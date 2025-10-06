@@ -18,6 +18,7 @@ import { Header } from "@/components/header"
 import { useWallet } from "@/components/wallet-context"
 import { AccountDashboard } from "@/components/account-dashboard"
 import { Button } from "@/components/ui/button"
+import { WalletConnectionModal } from "@/components/wallet-connection-modal"
 
 
 // Reusable Badge Component
@@ -33,10 +34,11 @@ function Badge({ icon, text }: { icon: React.ReactNode; text: string }) {
 }
 
 export default function LandingPage() {
-  const { isConnected, connectWallet } = useWallet()
+  const { isConnected, isGoogleAuthenticated, connectWallet } = useWallet()
   const [activeCard, setActiveCard] = useState(0)
   const [progress, setProgress] = useState(0)
   const mountedRef = useRef(true)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
@@ -71,6 +73,12 @@ export default function LandingPage() {
     setProgress(0)
   }
 
+
+  const openWalletModal = () => {
+    // Open the wallet connection modal
+    setShowWalletModal(true)
+  }
+
   const getDashboardContent = () => {
     switch (activeCard) {
       case 0:
@@ -84,28 +92,6 @@ export default function LandingPage() {
     }
   }
 
-  // If wallet is connected, show the account dashboard
-//   if (isConnected) {
-//     return (
-//       <div className="w-full min-h-screen relative bg-[#F7F5F3] overflow-x-hidden flex flex-col justify-start items-center">
-//         <div className="relative flex flex-col justify-start items-center w-full">
-//           <div className="w-full max-w-none px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] relative flex flex-col justify-start items-start min-h-screen">
-//             <div className="self-stretch h-12 relative overflow-hidden border-t border-b border-[rgba(55,50,47,0.12)] mt-8">
-//               <Header />
-//               <div className="w-[1px] h-full absolute left-4 sm:left-6 md:left-8 lg:left-0 top-0 bg-[rgba(55,50,47,0.12)] shadow-[1px_0px_0px_white] z-0"></div>
-
-// {/* Right vertical line */}
-// <div className="w-[1px] h-full absolute right-4 sm:right-6 md:right-8 lg:right-0 top-0 bg-[rgba(55,50,47,0.12)] shadow-[1px_0px_0px_white] z-0"></div>
-//             </div>
-
-//               <AccountDashboard />
-
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-
   return (
     <div className="w-full min-h-screen relative bg-[#F7F5F3] overflow-x-hidden flex flex-col justify-start items-center">
       <div className="relative flex flex-col justify-start items-center w-full">
@@ -116,23 +102,6 @@ export default function LandingPage() {
 
           <div className="self-stretch h-12 relative overflow-hidden border-t border-b border-[rgba(55,50,47,0.12)] mt-8">
             <Header />
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
-              <div className="w-full h-full relative">
-                {Array.from({ length: 400 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-[300px] h-16 border border-[rgba(3,7,18,0.08)]"
-                    style={{
-                      left: `${i * 300 - 600}px`,
-                      top: "-120px",
-                      transform: "rotate(-45deg)",
-                      transformOrigin: "top left",
-                    }}
-                  />
-                ))}
-              </div>
-
-            </div>
           </div>
 
           {/* Left vertical line */}
@@ -150,7 +119,7 @@ export default function LandingPage() {
             ) : (
               <div className="w-full flex justify-center items-center py-12">
                 {/* Hero Section */}
-            <div className="pt-16 sm:pt-20 md:pt-24 lg:pt-36 pb-8 sm:pb-12 md:pb-16 flex flex-col justify-start items-center px-2 sm:px-4 md:px-8 lg:px-0 w-full sm:pl-0 sm:pr-0 pl-0 pr-0">
+            <div className="pt-16 sm:pt-20 md:pt-20 lg:pt-20 pb-8 sm:pb-12 md:pb-16 flex flex-col justify-start items-center px-2 sm:px-4 md:px-8 lg:px-0 w-full sm:pl-0 sm:pr-0 pl-0 pr-0">
               <div className="w-full max-w-[937px] lg:w-[937px] flex flex-col justify-center items-center gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                 <div className="self-stretch rounded-[3px] flex flex-col justify-center items-center gap-4 sm:gap-5 md:gap-6 lg:gap-8">
                   <div className="w-full max-w-[748.71px] lg:w-[748.71px] text-center flex justify-center flex-col text-[#37322F] text-[24px] xs:text-[28px] sm:text-[36px] md:text-[52px] lg:text-[80px] font-normal leading-[1.1] sm:leading-[1.15] md:leading-[1.2] lg:leading-24 font-serif px-2 sm:px-4 md:px-0">
@@ -168,7 +137,7 @@ export default function LandingPage() {
               <div className="w-full max-w-[497px] lg:w-[497px] flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 relative z-10 mt-6 sm:mt-8 md:mt-10 lg:mt-12">
                 <div className="backdrop-blur-[8.25px] flex justify-start items-center gap-4">
                   <Button 
-                    onClick={connectWallet}
+                    onClick={openWalletModal}
                     className="h-10 sm:h-11 md:h-12 px-6 sm:px-8 md:px-10 lg:px-12 py-2 sm:py-[6px] relative bg-[#37322F] hover:bg-[#37322F]/90 shadow-[0px_0px_0px_2.5px_rgba(255,255,255,0.08)_inset] overflow-hidden rounded-full flex justify-center items-center border-0"
                   >
                     <div className="w-20 sm:w-24 md:w-28 lg:w-44 h-[41px] absolute left-0 top-[-0.5px] bg-gradient-to-b from-[rgba(255,255,255,0)] to-[rgba(0,0,0,0.10)] mix-blend-multiply"></div>
@@ -564,6 +533,12 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Wallet Connection Modal */}
+      <WalletConnectionModal 
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+      />
     </div>
   )
 }
