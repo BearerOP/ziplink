@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useMemo, useEffect } from "react"
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { createGoogleWalletAdapter } from '@/lib/wallet/google-wallet-adapter'
+import { useGoogleLogin } from '@react-oauth/google'
 
 // Create RPC connection
 const RPC_ENDPOINT = "https://api.devnet.solana.com"
@@ -48,6 +50,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [publicKey, setPublicKey] = useState<string | null>(null)
   const [balance, setBalance] = useState(0)
   const [walletAdapter, setWalletAdapter] = useState<any>(null)
+  const [googleIdToken, setGoogleIdToken] = useState<string | null>(null)
+  const [googleUserEmail, setGoogleUserEmail] = useState<string | null>(null)
+  const [isGoogleAuthenticatedState, setIsGoogleAuthenticatedState] = useState(false)
   
   // Create Solana connection
   const connection = useMemo(() => new Connection(RPC_ENDPOINT, 'confirmed'), [])
@@ -83,8 +88,24 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       wallets.push({ name: 'Coinbase Wallet', icon: '🔵', adapter: w.coinbaseSolana, installed: true })
     }
 
+    // Add Google Wallet if user is authenticated with Google
+    if (googleIdToken && googleUserEmail) {
+      const googleAdapter = createGoogleWalletAdapter({
+        apiEndpoint: process.env.NEXT_PUBLIC_API_URL || 'https://api.yourapp.com',
+        googleIdToken: googleIdToken,
+        userEmail: googleUserEmail
+      })
+      
+      wallets.push({ 
+        name: `Google Wallet (${googleUserEmail})`, 
+        icon: '🔑', 
+        adapter: googleAdapter, 
+        installed: true 
+      })
+    }
+
     return wallets
-  }, [])
+  }, [googleIdToken, googleUserEmail])
 
   const isConnected = !!publicKey && !!selectedWallet
   const selectedAccount = publicKey ? { address: publicKey } : null
@@ -176,13 +197,60 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Google Auth stubs (for header compatibility)
+  // Google OAuth login hook
+  const googleLoginHandler = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        console.log('[Google Auth] Login successful, fetching user info...')
+        
+        // Get user info from Google
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
+          }
+        })
+        
+        const userInfo = await userInfoResponse.json()
+        
+        console.log('[Google Auth] User info retrieved:', userInfo.email)
+        
+        // Set Google auth state
+        setGoogleIdToken(tokenResponse.access_token)
+        setGoogleUserEmail(userInfo.email)
+        setIsGoogleAuthenticatedState(true)
+        
+        console.log('[Google Auth] Google wallet will now appear in available wallets')
+      } catch (error) {
+        console.error('[Google Auth] Failed to get user info:', error)
+        alert('Failed to get Google user information. Please try again.')
+      }
+    },
+    onError: (error) => {
+      console.error('[Google Auth] Login failed:', error)
+      alert('Google login failed. Please try again.')
+    },
+  })
+
+  // Google Auth implementation
   const loginWithGoogle = async () => {
-    console.log('Google login not implemented')
+    try {
+      console.log('[Google Auth] Initiating Google login...')
+      googleLoginHandler()
+    } catch (error) {
+      console.error('Google login error:', error)
+      alert('Failed to initiate Google login. Please try again.')
+    }
   }
 
   const logoutGoogle = () => {
-    console.log('Google logout not implemented')
+    setGoogleIdToken(null)
+    setGoogleUserEmail(null)
+    setIsGoogleAuthenticatedState(false)
+    
+    // If currently connected to Google wallet, disconnect it
+    if (selectedWallet?.startsWith('Google Wallet')) {
+      disconnectWallet()
+    }
   }
 
   // Auto-refresh balance every 30 seconds
@@ -217,8 +285,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       copyAddress,
       refreshBalance,
       
-      // Google auth stubs
-      isGoogleAuthenticated: false,
+      // Google auth
+      isGoogleAuthenticated: isGoogleAuthenticatedState,
       googleUser: null,
       loginWithGoogle,
       logoutGoogle,

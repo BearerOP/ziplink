@@ -80,9 +80,9 @@ function Badge({ children }: { children: React.ReactNode }) {
 
 export default function WalletFeaturesSection() {
   return (
-    <section className="w-full border-b border-[rgba(55,50,47,0.12)] flex flex-col items-center bg-[#F7F5F3]">
+    <section className="w-full border border-[rgba(55,50,47,0.12)] flex flex-col items-center bg-[#F7F5F3]">
       {/* Header */}
-      <div className="self-stretch px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] py-10 sm:py-12 md:py-16 border-b border-[rgba(55,50,47,0.12)] flex justify-center items-center">
+      <div className="self-stretch px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] py-10 sm:py-12 md:py-16 border-b border-[rgba(31,97,47,0.12)] flex justify-center items-center">
         <div className="w-full max-w-[720px] px-4 sm:px-6 py-4 sm:py-5 overflow-hidden rounded-lg flex flex-col items-center gap-4">
           <Badge>Distributed wallet</Badge>
           <h2 className="text-center text-[#49423D] text-2xl md:text-5xl font-semibold leading-tight md:leading-[60px] font-sans tracking-tight text-balance">
@@ -207,7 +207,7 @@ export default function WalletFeaturesSection() {
       </div>
 
       {/* Install a dev-only provider shim to expose a dApp-compatible provider shape */}
-      <SolanaProviderShim />
+      <SolanaProviderShim /> 
     </section>
   )
 }

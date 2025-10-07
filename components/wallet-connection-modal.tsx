@@ -9,7 +9,7 @@ interface WalletModalProps {
 }
 
 export function WalletConnectionModal({ isOpen, onClose }: WalletModalProps) {
-  const { availableWallets, connectWallet } = useWallet()
+  const { availableWallets, connectWallet, loginWithGoogle, isGoogleAuthenticated } = useWallet()
   const [isConnecting, setIsConnecting] = useState(false)
   const [connectingWallet, setConnectingWallet] = useState<string | null>(null)
 
@@ -60,6 +60,27 @@ export function WalletConnectionModal({ isOpen, onClose }: WalletModalProps) {
 
         {/* Wallet List */}
         <div className="p-6 space-y-3">
+          {/* Google Wallet Login Option */}
+          {!isGoogleAuthenticated && (
+            <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl">🔑</div>
+                  <div>
+                    <h3 className="font-semibold text-[#37322f]">Login with Google</h3>
+                    <p className="text-xs text-[rgba(55,50,47,0.60)]">Create a wallet using your Google account</p>
+                  </div>
+                </div>
+                <button
+                  onClick={loginWithGoogle}
+                  className="px-4 py-2 bg-white hover:bg-gray-50 text-[#37322f] rounded-lg border border-gray-300 text-sm font-medium transition-colors"
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          )}
+
           {availableWallets.length > 0 ? (
             availableWallets.map((wallet) => (
               <button

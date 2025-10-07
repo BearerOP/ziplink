@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  googleId  String?   @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  zipLinks  ZipLink[]
+}
+
+model ZipLink {
+  id           Int        @id @default(autoincrement())
+  linkId       String     @unique
+  url          String     @unique
+  creatorId    Int?
+  creatorEmail String?
+  publicKey    String     @unique
+  secretKey    String
+  tokenMint    String?
+  amount       Decimal    @db.Decimal(20, 9)
+  memo         String?
+  title        String?
+  status       String     @default("active")
+  expiresAt    DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  claimedAt    DateTime?
+  claims       ZipClaim[]
+  creator      User?      @relation(fields: [creatorId], references: [id])
+
+  @@index([status])
+  @@index([creatorId])
+  @@index([createdAt])
+}
+
+model ZipClaim {
+  id           Int      @id @default(autoincrement())
+  zipLinkId    Int
+  claimerAddr  String?
+  claimerEmail String?
+  claimerName  String?
+  txSignature  String?
+  amount       Decimal  @db.Decimal(20, 9)
+  metadata     Json?
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+  zipLink      ZipLink  @relation(fields: [zipLinkId], references: [id])
+
+  @@index([zipLinkId])
+  @@index([claimerEmail])
+  @@index([createdAt])
+}
+
+model ZipLinkAnalytics {
+  id           Int      @id @default(autoincrement())
+  date         DateTime @unique @db.Date
+  linksCreated Int      @default(0)
+  linksClaimed Int      @default(0)
+  totalAmount  Decimal  @default(0) @db.Decimal(20, 9)
+  uniqueUsers  Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

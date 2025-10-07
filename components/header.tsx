@@ -3,9 +3,12 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useWallet } from "./wallet-context"
+import { WalletConnectionModal } from "./wallet-connection-modal"
+import { useState } from "react"
 
 export function Header() {
   const { isConnected, selectedAccount } = useWallet()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   
   const formatAddress = (address: string) => {
     if (!address) return ''
@@ -57,6 +60,7 @@ export function Header() {
             ) : (
               <Button 
                 variant="ghost" 
+                onClick={() => setIsModalOpen(true)}
                 className="text-[#37322f] bg-[#37322f]/5 hover:bg-[#37322f]/20 text-sm px-4 py-2 h-auto font-sans"
               >
                 Connect Wallet
@@ -77,6 +81,12 @@ export function Header() {
           </div>
         </div>
       </div>
+      
+      {/* Wallet Connection Modal */}
+      <WalletConnectionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </>
   )
 }

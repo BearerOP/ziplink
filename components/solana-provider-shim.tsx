@@ -15,6 +15,7 @@ export default function SolanaProviderShim() {
     if (!window.solana) {
       const adapter = createDevAdapter()
       // Minimal provider shape many Solana dApps expect
+      console.log("[v0] Dev provider shim installed")
       window.solana = {
         isZipLink: true,
         publicKey: adapter.publicKey,

@@ -1,9 +1,11 @@
+"use client"
+
 import type React from "react"
-import type { Metadata } from "next"
 import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { WalletProvider } from "@/components/wallet-context"
 import { Toaster } from "sonner"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,11 +22,8 @@ const instrumentSerif = Instrument_Serif({
   preload: true,
 })
 
-export const metadata: Metadata = {
-  title: "ZipLink - Solana Wallet, Adapter & Swapper",
-  description:
-    "Secure Solana wallet with built-in token swapping, dApp adapter layer, and advanced key management. Experience seamless Solana transactions.",
-}
+// Google OAuth Client ID - get from Google Cloud Console
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
 
 export default function RootLayout({
   children,
@@ -43,10 +42,12 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" />
       </head>
       <body className="font-sans antialiased">
-        <WalletProvider>
-          {children}
-          <Toaster richColors closeButton position="bottom-right" />
-        </WalletProvider>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <WalletProvider>
+            {children}
+            <Toaster richColors closeButton position="bottom-right" />
+          </WalletProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   )
